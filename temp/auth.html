@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<title>Auth</title>
+	{% include 'bootstrap.html' %}
+	<script src="static/js/func.js"></script>
+</head>
+<body>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-lg-4"></div>
+		<div class="col-lg-4">
+			<form class="auth">
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="input-group">
+							<span class="input-group-addon" id="basic-addon1">Login</span>
+							<input class="form-control" type="text" name="login">
+						</div>
+
+						<div class="input-group">
+							<span class="input-group-addon" id="basic-addon2">Password</span>
+							<input class="form-control" type="password" name="password">
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-6">
+						<input type="button" onclick="auth('auth');" style="width: 100%" class="btn btn-success" value="LogIn">
+					</div>
+					<div class="col-lg-6">
+						<a href="/register/" style="width: 100%" class="btn btn-danger">Register</a>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="col-lg-4"></div>
+	</div>
+	<div class="row">
+
+	</div>
+</div>
+
+
+</body>
+</html>

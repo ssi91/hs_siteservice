@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Project list</title>
+	{% include 'bootstrap.html' %}
+	<script src="../static/js/func.js"></script>
+</head>
+<script>
+	$(document).ready(function(){
+		$(".addGroupForm").submit(function() {
+			var data = $(this).serialize();
+			$.ajax({
+				data: data,
+				url: "/",
+				method: "post",
+				dataType: "json",
+				success: function(data){
+					if (data.status == "200")
+						location.reload();
+					else
+						alert(data.error_text);
+				}
+			});
+			return false;
+		});
+	});
+
+	$('#myModal').on('shown.bs.modal', function () {
+		$('#myInput').focus()
+	})
+
+</script>
+<style>
+</style>
+<body>
+<nav class="navbar navbar-default">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<a class="navbar-brand" href="#">HS</a>
+		</div>
+		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
+			<ul class="nav navbar-nav navbar-right">
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Баланс:
+						{{user.money}} р. <span
+								class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li>
+							<a href="#">Пополнить баланс</a>
+						</li>
+					</ul>
+
+				</li>
+				<li>
+					<a href="/?exit=y">Выйти</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</nav>
+
+<div class="container-fluid">
+	{{user.user}}
+	<div class="row">
+		<div class="col-lg-2">
+			<nav class="navbar-default navbar-side" role="navigation">
+				<div class="sidebar-collapse">
+					<ul class="nav" id="main-menu">
+						<li>
+							<a class="" href="/">
+								Группы
+							</a>
+						</li>
+					</ul>
+				</div>
+			</nav>
+		</div>
+		<div class="col-lg-10">
+			<nav class="navbar navbar-default">
+				<div class="container-fluid">
+					<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+						<ul class="nav navbar-nav navbar-left">
+							<li>
+								<button type="button" class="btn btn-default navbar-btn" data-toggle="modal" data-target="#myModal">
+									Добавить
+								</button>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</nav>
+
+			{% for group in user.groups %}
+			<div class="row">
+				<div class="col-lg-2">
+					<a href="https://vk.com/{{group.screen_name}}" target="_blank">
+						<img src="{{group.photo_medium}}">
+					</a>
+				</div>
+				<div class="col-lg-10">
+					<h3><a href="https://vk.com/{{group.screen_name}}" target="_blank">{{group.name}}</a></h3>
+
+					<div>
+						<div class="btn-group btn-group-lg" role="group" aria-label="test">
+							<button type="button" class="btn btn-default" onclick="upjournal({{group.gid}})">Обновить</button>
+							<button type="button" class="btn btn-default" onclick="journal({{group.gid}})">Журнал</button>
+						</div>
+					</div>
+					<div class="panel panel-default" style="display: {% if group.jshow == 'y' %}display{% else %}none{% endif %};" id="{{group.gid}}">
+						<div class="panel-heading">
+							Журнал обновлений группы
+						</div>
+						<div class="panel-body">
+							{% for journal in group.journal %}
+							<div class="row">
+								<div class="col-lg-12">
+									<div class="panel panel-default">
+										<div class="row">
+											<div class="col-lg-2">
+												{{journal.ts}}
+											</div>
+											<div class="col-lg-2">
+												{% if journal.size %}
+												Всего: {{journal.size}}
+												<br>
+												{% for nc in journal.newcomers %}
+												{{nc}}(<a href="https://vk.com/id{{nc}}" target="_blank">Link</a>)
+												<br>
+												{% endfor %}
+												{% else %}
+												{{journal.status}}
+												{% endif %}
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							{% endfor %}
+						</div>
+					</div>
+				</div>
+			</div>
+			{% endfor %}
+
+			<!-- Modal -->
+			<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+							</button>
+							<h4 class="modal-title" id="myModalLabel">Добавить группу</h4>
+						</div>
+						<form method="post" class="addGroupForm">
+							<div class="modal-body">
+								<input class="form-control" name="groupid" type="text" placeholder="id группы">
+								<input type="hidden" name="act" value="add">
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
+								<input type="submit" class="btn btn-primary" value="Добавить">
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+			<!-- End Modal -->
+
+		</div>
+	</div>
+</div>
+</body>
+</html>
