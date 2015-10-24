@@ -1,6 +1,7 @@
 from jinja2 import Template, Environment, PackageLoader, FileSystemLoader
 import hashlib
 from pymongo import MongoClient, ASCENDING, DESCENDING
+import os
 
 """
 2. Проверить e-mail на валидность
@@ -11,7 +12,8 @@ from pymongo import MongoClient, ASCENDING, DESCENDING
 def reg(env, start_response, query):
 	env1 = Environment(loader = FileSystemLoader('temp'))
 	# журнальный инстанс
-	jclient = MongoClient("mongodb://{0}:27017".format("172.17.0.4"))
+	# jclient = MongoClient("mongodb://{0}:27017".format("172.17.0.4"))
+	jclient = MongoClient("mongodb://{0}:27017".format(os.environ["HS_MONGO_JOURNAL_PORT_27017_TCP_ADDR"]))
 
 	try:
 		request_body_size = int(env.get('CONTENT_LENGTH', 0))

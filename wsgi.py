@@ -15,10 +15,10 @@ def application(env, start_response):
 		c = http.cookies.SimpleCookie(env['HTTP_COOKIE'])
 
 	# журнальный инстанс
-	jclient = MongoClient("mongodb://{0}:27017".format("172.17.0.4"))
+	jclient = MongoClient("mongodb://{0}:27017".format(os.environ["HS_MONGO_JOURNAL_PORT_27017_TCP_ADDR"]))
 
 	# инстанс с данными
-	client = MongoClient("mongodb://{0}:27017".format(os.environ["MONGO_IP"]))
+	client = MongoClient("mongodb://{0}:27017".format(os.environ["HS_MONGO_DATA_PORT_27017_TCP_ADDR"]))
 
 	if 'user' not in c:
 		try:
