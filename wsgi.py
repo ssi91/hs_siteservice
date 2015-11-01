@@ -61,6 +61,7 @@ def application(env, start_response):
 				query = parse_qs(qs)
 			if len(qs) and "jshow" not in query:
 				if 'exit' not in query:
+					userlimmit = 1000000
 					if query["act"][0] == "add":
 						import time
 						import json
@@ -79,6 +80,10 @@ def application(env, start_response):
 						resp_vk = vkreq.get_group(query["groupid"][0])
 						if "error" in resp_vk:
 							return [json.dumps({"status": "500", "error_text": "wrong gid"}).encode('utf-8')]
+						elif resp_vk["response"][0]["members_count"] >= userlimmit:
+							return [
+								json.dumps({"status": "500", "error_text": "число пользователей должно быть меньше {0}".format(userlimmit)}).encode(
+									'utf-8')]
 
 						str_gid = str(resp_vk["response"][0]["gid"])
 						if str_gid in client[c["user"].value].collection_names():
@@ -102,6 +107,14 @@ def application(env, start_response):
 						if last_doc_journal is not None and (int(time.time()) - last_doc_journal["ts"]) < rest:
 							return [
 								json.dumps({"status": "500", "error_test": "Превышен лиммит на количество запросов на обновление"}).encode('utf-8')]
+						import vkreq
+
+						resp_vk = vkreq.get_group(query["gid"][0])
+						if resp_vk["members_count"] >= userlimmit:
+							return [
+								json.dumps({"status": "500", "error_text": "число пользователей должно быть меньше {0}".format(userlimmit)}).encode(
+									'utf-8')]
+
 						import rmqsend
 						rmqsend.send(json.dumps({"user": c["user"].value, "group_id": query["gid"][0]}).encode('utf-8'))
 						return [json.dumps({"status": "200"}).encode('utf-8')]
