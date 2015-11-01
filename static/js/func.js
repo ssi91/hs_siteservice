@@ -74,7 +74,6 @@ function journal(gid){
 	if (param_str == "")
 		param_str = '/';
 
-//	console.log(param_str);
 	try {
 		history.pushState(null, null, param_str);
 		return;
@@ -93,7 +92,6 @@ function upjournal(gid){
 		dataType: "json",
 		success: function(data){
 			if (data.status == "200") {
-//				alert(1==1);
 			}
 		}
 	});
